@@ -1,0 +1,564 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-display);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/*
+ * KURS — strict monochrome.
+ * Matte black canvas, zinc-950 surfaces, hairline zinc-800/60 borders,
+ * white type with zinc-400 for secondary text. One accent: white.
+ * No glows, no gradients, no blur. The site is dark-only, so :root and
+ * .dark share one palette.
+ */
+:root,
+.dark {
+  --background: oklch(0 0 0); /* black */
+  --foreground: oklch(0.985 0 0); /* zinc-50 */
+  --card: oklch(0.141 0.005 285.823); /* zinc-950 */
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.141 0.005 285.823);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.141 0.005 285.823);
+  --secondary: oklch(0.21 0.006 285.885); /* zinc-900 */
+  --secondary-foreground: oklch(0.871 0.006 286.286); /* zinc-300 */
+  --muted: oklch(0.21 0.006 285.885);
+  --muted-foreground: oklch(0.705 0.015 286.067); /* zinc-400 */
+  --accent: oklch(0.21 0.006 285.885);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(0.274 0.006 286.033 / 60%); /* zinc-800/60 */
+  --input: oklch(0.274 0.006 286.033); /* zinc-800 */
+  --ring: oklch(0.985 0 0 / 45%);
+  --chart-1: oklch(0.985 0 0);
+  --chart-2: oklch(0.705 0.015 286.067);
+  --chart-3: oklch(0.552 0.016 285.938);
+  --chart-4: oklch(0.442 0.017 285.786);
+  --chart-5: oklch(0.37 0.013 285.805);
+  --radius: 0.375rem;
+  --sidebar: oklch(0.141 0.005 285.823);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.985 0 0);
+  --sidebar-primary-foreground: oklch(0.141 0.005 285.823);
+  --sidebar-accent: oklch(0.21 0.006 285.885);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.274 0.006 286.033 / 60%);
+  --sidebar-ring: oklch(0.985 0 0 / 45%);
+  color-scheme: dark;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: clip;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  ::selection {
+    background: var(--foreground);
+    color: var(--background);
+  }
+  section[id] {
+    scroll-margin-top: 4.5rem;
+  }
+}
+
+html:not(.lenis) {
+  scroll-behavior: smooth;
+}
+
+/*
+ * Desktop custom cursor (components/site/cursor.tsx).
+ * Position comes only from CSS variables written once per animation frame and
+ * is applied only via translate3d on promoted (will-change) layers; size
+ * morphs are transform: scale transitions. Nothing here triggers layout.
+ */
+html.custom-cursor,
+html.custom-cursor * {
+  cursor: none;
+}
+
+.kc {
+  --cx: -100px;
+  --cy: -100px;
+  --rx: -100px;
+  --ry: -100px;
+  --s: 0.607;
+  --p: 1;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  contain: strict;
+  mix-blend-mode: difference;
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.kc[data-visible="true"] {
+  opacity: 1;
+}
+.kc[data-pressed] {
+  --p: 0.86;
+}
+
+.kc-ring,
+.kc-dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+.kc-ring {
+  transform: translate3d(var(--rx), var(--ry), 0);
+}
+.kc-dot {
+  transform: translate3d(var(--cx), var(--cy), 0);
+}
+
+/* 56px base, scaled — 1.5px stroke stays ~1px at the resting 34px size. */
+.kc-shape {
+  position: absolute;
+  top: -28px;
+  left: -28px;
+  width: 56px;
+  height: 56px;
+  border: 1.5px solid #fff;
+  border-radius: 50%;
+  transform: scale(calc(var(--s) * var(--p)));
+  transition: transform 550ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+.kc-fill {
+  position: absolute;
+  inset: -1.5px;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 550ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.kc[data-mode="label"] .kc-fill {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.kc-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate3d(-50%, -50%, 0) translateY(4px);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #000;
+  opacity: 0;
+  transition:
+    opacity 300ms ease,
+    transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.kc[data-mode="label"] .kc-label {
+  opacity: 1;
+  transform: translate3d(-50%, -50%, 0);
+}
+
+.kc-dot-i {
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fff;
+  transition:
+    opacity 250ms ease,
+    transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.kc[data-mode="magnet"] .kc-dot-i {
+  transform: scale(0.6);
+}
+.kc[data-mode="label"] .kc-dot-i {
+  opacity: 0;
+  transform: scale(0);
+}
+
+/* Touch or hybrid-touch primary input, or the lite tier: never shown. */
+@media (hover: none), (pointer: coarse) {
+  .kc {
+    display: none;
+  }
+}
+[data-perf="lite"] .kc {
+  display: none;
+}
+
+/*
+ * Hairline underline that draws in from the left on hover and leaves to the
+ * right on hover-out. Use on inline text links / spans.
+ */
+@utility link-line {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 650ms cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+  &:focus-visible::after,
+  *:focus-visible > &::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+  @media (hover: hover) {
+    &:hover::after,
+    *:hover > &::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+  }
+}
+
+/* ================================================================== */
+/* Motion — compositor-only, tiered                                    */
+/* ================================================================== */
+/*
+ * html[data-perf] is set in <head> before first paint (lib/perf-scripts.ts).
+ * Every hidden/animated state below is gated on data-perf="full", so the
+ * lite tier (weak devices, reduced motion, Data Saver), no-JS and browsers
+ * without scroll timelines all get a static, fully visible page.
+ * Only opacity / translate / scale are animated — never layout or paint.
+ */
+:root {
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Spring stiffness 40 / damping 25 / mass 1 (overdamped), sampled. */
+  --spring: linear(0.0000 0.00%, 0.0021 0.48%, 0.0161 1.47%, 0.0479 2.81%, 0.0955 4.44%, 0.1538 6.35%, 0.2181 8.50%, 0.2847 10.88%, 0.3513 13.47%, 0.4162 16.27%, 0.4786 19.26%, 0.5375 22.43%, 0.5925 25.78%, 0.6433 29.30%, 0.6897 32.99%, 0.7317 36.84%, 0.7694 40.85%, 0.8030 45.01%, 0.8326 49.32%, 0.8585 53.77%, 0.8811 58.37%, 0.9006 63.11%, 0.9173 67.99%, 0.9316 73.00%, 0.9437 78.14%, 0.9539 83.42%, 0.9624 88.82%, 0.9695 94.35%, 1.0000 100.00%);
+  --spring-dur: 2200ms;
+  --stagger: 70ms;
+}
+@media (max-width: 767px) {
+  :root {
+    --stagger: 0ms; /* one column: no cascade, each card on its own */
+  }
+}
+
+/* ---- Reveal on enter (IntersectionObserver flips data-shown) ---- */
+[data-perf="full"] [data-reveal="up"] {
+  transition:
+    opacity 900ms var(--ease-out),
+    translate var(--spring-dur) var(--spring);
+  transition-delay: calc(var(--dd, 0ms) + var(--i, 0) * var(--stagger));
+}
+[data-perf="full"] [data-reveal="up"]:not([data-shown]) {
+  opacity: 0;
+  translate: 0 20px;
+}
+
+/* ---- Words rise out of a mask ---- */
+.w-m {
+  display: inline-block;
+  overflow: hidden;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+  vertical-align: bottom;
+}
+.w-i {
+  display: inline-block;
+}
+[data-perf="full"] [data-reveal="words"] .w-i {
+  transition:
+    opacity 900ms var(--ease-out),
+    translate var(--spring-dur) var(--spring);
+  transition-delay: calc(var(--dd, 0ms) + var(--i) * 70ms);
+}
+[data-perf="full"] [data-reveal="words"]:not([data-shown]) .w-i {
+  opacity: 0;
+  translate: 0 110%;
+}
+[data-perf="full"] [data-words="load"] .w-i {
+  animation:
+    kurs-rise var(--spring-dur) var(--spring) both,
+    kurs-fade 900ms var(--ease-out) both;
+  animation-delay: calc(var(--dd, 0ms) + var(--i) * 90ms);
+}
+
+/* ---- First-paint entrance (hero) — no hydration wait ---- */
+[data-perf="full"] .load-up {
+  animation:
+    kurs-up var(--spring-dur) var(--spring) both,
+    kurs-fade 900ms var(--ease-out) both;
+  animation-delay: var(--dd, 0ms);
+}
+[data-perf="full"] .load-fade {
+  animation: kurs-fade 1800ms var(--ease-out) both;
+}
+[data-perf="full"] .load-line {
+  animation: kurs-draw var(--dur, 1200ms) var(--ease-out) both;
+  animation-delay: var(--dd, 0ms);
+}
+
+/* ---- Letters (footer wordmark) ---- */
+[data-perf="full"] [data-reveal="letters"] > span {
+  transition: translate var(--spring-dur) var(--spring);
+  transition-delay: calc(var(--i) * 80ms);
+}
+[data-perf="full"] [data-reveal="letters"]:not([data-shown]) > span {
+  translate: 0 100%;
+}
+
+/* ---- Count-up numbers (registered custom property + counter) ---- */
+@property --n {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 0;
+}
+.count {
+  --n: var(--to);
+  counter-reset: n var(--n);
+}
+.count::after {
+  content: counter(n);
+}
+[data-perf="full"] [data-reveal]:not([data-shown]) .count {
+  --n: var(--from);
+}
+[data-perf="full"] [data-shown] .count {
+  transition: --n 1800ms var(--ease-out);
+}
+
+/* ---- Mobile menu ---- */
+[data-perf="full"] .menu-item {
+  animation:
+    kurs-drop 400ms var(--ease-out) both,
+    kurs-fade 400ms var(--ease-out) both;
+  animation-delay: calc(var(--i) * 50ms);
+}
+
+/* ---- Header hide-on-scroll (data attributes written by header.tsx) ---- */
+.site-header[data-hidden="true"]:not([data-open="true"]) {
+  translate: 0 -100%;
+}
+
+/* ---- Magnetic CTAs (lib/magnetic.ts writes transform) ---- */
+[data-magnetic] {
+  transition: transform 500ms var(--ease-out);
+}
+
+/* ---- Scroll-driven effects: native timelines, zero JS ---- */
+.scroll-progress {
+  display: none;
+}
+@supports (animation-timeline: view()) {
+  [data-perf="full"] .scroll-progress {
+    display: block;
+    animation: kurs-grow linear both;
+    animation-timeline: scroll(root);
+  }
+
+  /* Hero: background drifts slower than the page, copy lifts away. */
+  [data-perf="full"] .hero {
+    view-timeline: --hero block;
+  }
+  [data-perf="full"] .hero-bg {
+    animation: kurs-hero-bg linear both;
+    animation-timeline: --hero;
+    animation-range: exit 0% exit 100%;
+  }
+  [data-perf="full"] .hero-content {
+    animation: kurs-hero-out linear both;
+    animation-timeline: --hero;
+    animation-range: exit 0% exit 70%;
+  }
+
+  /* Parallax frames. */
+  [data-perf="full"] .px {
+    view-timeline: --px block;
+  }
+  [data-perf="full"] .px-i {
+    animation: kurs-drift linear both;
+    animation-timeline: --px;
+    animation-range: cover 0% cover 100%;
+  }
+
+  /* Gallery lead frame opens toward the centre of the screen. */
+  [data-perf="full"] .lead-wrap {
+    view-timeline: --lead block;
+  }
+  [data-perf="full"] .lead {
+    animation: kurs-open linear both;
+    animation-timeline: --lead;
+    animation-range: entry 0% cover 50%;
+  }
+  [data-perf="full"] .lead-i {
+    animation: kurs-lead linear both;
+    animation-timeline: --lead;
+    animation-range: cover 0% cover 100%;
+  }
+
+  /* Read-along: words light up as the paragraph crosses the viewport. */
+  [data-perf="full"] .sw {
+    view-timeline: --sw block;
+  }
+  [data-perf="full"] .sw > span {
+    animation: kurs-light linear both;
+    animation-timeline: --sw;
+    animation-range: cover calc(8% + var(--i) * var(--step)) cover calc(8% + (var(--i) + 1) * var(--step));
+  }
+}
+
+/*
+ * Off-screen sections skip layout & paint entirely while native scrolling
+ * is in use (Lenis needs exact heights, so it opts out with .lenis).
+ */
+html:not(.lenis) .cv {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1000px;
+}
+
+@keyframes kurs-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes kurs-up {
+  from {
+    translate: 0 20px;
+  }
+}
+@keyframes kurs-rise {
+  from {
+    translate: 0 110%;
+  }
+}
+@keyframes kurs-drop {
+  from {
+    translate: 0 -6px;
+  }
+}
+@keyframes kurs-draw {
+  from {
+    scale: 0 1;
+  }
+}
+@keyframes kurs-grow {
+  from {
+    scale: 0 1;
+  }
+  to {
+    scale: 1 1;
+  }
+}
+@keyframes kurs-hero-bg {
+  from {
+    translate: 0 0;
+    scale: 1;
+  }
+  to {
+    translate: 0 18%;
+    scale: 1.08;
+  }
+}
+@keyframes kurs-hero-out {
+  to {
+    translate: 0 -90px;
+    opacity: 0;
+  }
+}
+@keyframes kurs-drift {
+  from {
+    translate: 0 calc(var(--px) * -1);
+  }
+  to {
+    translate: 0 var(--px);
+  }
+}
+@keyframes kurs-open {
+  from {
+    scale: 0.94;
+  }
+  to {
+    scale: 1;
+  }
+}
+@keyframes kurs-lead {
+  from {
+    translate: 0 -6%;
+    scale: 1.04;
+  }
+  50% {
+    scale: 1;
+  }
+  to {
+    translate: 0 6%;
+    scale: 1;
+  }
+}
+@keyframes kurs-light {
+  from {
+    opacity: 0.18;
+  }
+  to {
+    opacity: 1;
+  }
+}
